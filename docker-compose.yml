@@ -1,0 +1,43 @@
+version: "3"
+services:
+    db:
+        image: mysql:latest
+        container_name: rup-mysql
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: HYP060911!
+            MYSQL_DATABASE: RUP
+            MYSQL_USER: HYP
+            MYSQL_PASSWORD: HYP180923!
+            LC_ALL: C.UTF-8
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+        restart: always
+        volumes:
+            - /home/rup_talk/RUP-docker/DB:/var/lib/mysql
+
+    ai:
+        build:
+            context: ./AI
+            dockerfile: Dockerfile
+        image: php:apache
+        container_name: rup-ai
+        ports:
+            - "1000:80"
+        volumes:
+            - /home/rup_talk/RUP-docker/AI:/var/www/html
+
+    web:
+        build:
+            context: ./Web
+            dockerfile: Dockerfile
+        image: php:apache
+        container_name: rup-web
+        ports:
+            - "80:80"
+        volumes:
+            - /home/rup_talk/RUP-docker/Web:/var/www/html
+        depends_on:
+            - db
